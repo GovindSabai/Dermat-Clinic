@@ -79,27 +79,27 @@ export const team = [
     name: 'Rohan Mehta',
     role: 'Patient Care Coordinator',
     category: 'Patient Care Team',
-    photo: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400&h=400'
+    photo: '/rohan.jpg'
   },
   {
     id: 12,
     name: 'Pooja Desai',
     role: 'Front Desk Manager',
     category: 'Patient Care Team',
-    photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400&h=400'
+    photo: '/pooja.jpg'
   },
   {
     id: 13,
     name: 'Karan Singh',
     role: 'Patient Concierge',
     category: 'Patient Care Team',
-    photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400&h=400'
+    photo: '/karan.jpg'
   },
   {
     id: 14,
     name: 'Suresh Kumar',
     role: 'Administrative Assistant',
     category: 'Patient Care Team',
-    photo: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=400&h=400'
+    photo: '/suresh.jpg'
   }
 ];
