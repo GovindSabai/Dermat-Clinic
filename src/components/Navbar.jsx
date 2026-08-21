@@ -79,20 +79,18 @@ export const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <Link to="/" className="flex items-center transition-transform hover:scale-[1.02] active:scale-[0.98]">
+          <Link to="/" className="relative flex items-center transition-transform hover:scale-[1.02] active:scale-[0.98]">
             <img 
               src="/logo.png" 
               alt="Dermat Clinic Logo" 
-              className={`block dark:hidden w-auto object-contain transition-all duration-300 ${
+              className={`w-auto object-contain transition-all duration-300 dark:opacity-0 ${
                 isScrolled ? 'h-10 sm:h-12' : 'h-12 sm:h-16'
               }`} 
             />
             <img 
               src="/logo-dark.png" 
               alt="Dermat Clinic Logo Dark" 
-              className={`hidden dark:block w-auto object-contain transition-all duration-300 ${
-                isScrolled ? 'h-10 sm:h-12' : 'h-12 sm:h-16'
-              }`} 
+              className={`absolute top-0 left-0 w-full h-full object-contain transition-all duration-300 opacity-0 dark:opacity-100 pointer-events-none`} 
             />
           </Link>
 
