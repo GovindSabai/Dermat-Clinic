@@ -8,7 +8,7 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Brand */}
           <div>
-            <Link to="/" className="mb-4 inline-block relative">
+            <Link to="/" className="mb-4 flex items-center w-fit relative">
               <img 
                 src="/logo.png" 
                 alt="Dermat Clinic Logo" 
