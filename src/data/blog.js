@@ -30,7 +30,7 @@ export const blogPosts = [
     author: 'Dr. Priya Menon',
     excerpt: 'Sunscreen isn\'t just for the beach. Learn why daily SPF is your best anti-aging defense.',
     content: 'UV rays penetrate clouds and windows, causing premature aging and increasing the risk of skin cancer. Using a broad-spectrum SPF 30 or higher every day is the most effective way to protect your skin. Remember to reapply every two hours if you are outdoors.',
-    image: 'https://images.unsplash.com/photo-1526413232644-8a40f411ed06?auto=format&fit=crop&q=80&w=600&h=400'
+    image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&q=80&w=600&h=400'
   },
   {
     id: 4,
