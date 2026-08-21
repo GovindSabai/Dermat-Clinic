@@ -83,14 +83,14 @@ export const Navbar = () => {
             <img 
               src="/logo.png" 
               alt="Dermat Clinic Logo" 
-              className={`w-auto object-contain transition-all duration-300 dark:opacity-0 ${
+              className={`w-auto object-contain object-left transition-all duration-300 dark:opacity-0 ${
                 isScrolled ? 'h-10 sm:h-12' : 'h-12 sm:h-16'
               }`} 
             />
             <img 
               src="/logo-dark.png" 
               alt="Dermat Clinic Logo Dark" 
-              className={`absolute top-0 left-0 w-full h-full object-contain transition-all duration-300 opacity-0 dark:opacity-100 pointer-events-none`} 
+              className={`absolute top-0 left-0 w-full h-full object-contain object-left transition-all duration-300 opacity-0 dark:opacity-100 pointer-events-none`} 
             />
           </Link>
 

@@ -8,16 +8,16 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Brand */}
           <div>
-            <Link to="/" className="mb-4 block relative">
+            <Link to="/" className="mb-4 inline-block relative">
               <img 
                 src="/logo.png" 
                 alt="Dermat Clinic Logo" 
-                className="h-12 w-auto object-contain transition-all duration-300 dark:opacity-0"
+                className="h-12 w-auto object-contain object-left transition-all duration-300 dark:opacity-0"
               />
               <img 
                 src="/logo-dark.png" 
                 alt="Dermat Clinic Logo Dark" 
-                className="absolute top-0 left-0 w-full h-full object-contain transition-all duration-300 opacity-0 dark:opacity-100 pointer-events-none"
+                className="absolute top-0 left-0 w-full h-full object-contain object-left transition-all duration-300 opacity-0 dark:opacity-100 pointer-events-none"
               />
             </Link>
             <p className="text-text-secondary text-sm leading-relaxed mb-4">
