@@ -8,13 +8,15 @@ import toast from 'react-hot-toast';
 import { User, Lock, Mail, Camera } from 'lucide-react';
 
 export const Profile = () => {
-  const { user, updateUserProfile, updateUserPassword } = useAuth();
+  const { user, updateUserProfile, updateUserPassword, updateUserEmail } = useAuth();
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
   const [imageError, setImageError] = useState(false);
 
   const [profileData, setProfileData] = useState({
     displayName: user?.displayName || '',
+    email: user?.email || '',
+    photoURL: user?.photoURL || '',
   });
 
   const [passwordData, setPasswordData] = useState({
@@ -30,11 +32,34 @@ export const Profile = () => {
     e.preventDefault();
     setIsUpdatingProfile(true);
     try {
-      await updateUserProfile(profileData.displayName, user.photoURL);
-      toast.success('Profile updated successfully!');
+      let emailUpdated = false;
+      let profileUpdated = false;
+
+      // Update Profile Details (Name & Photo)
+      if (profileData.displayName !== user.displayName || profileData.photoURL !== user.photoURL) {
+        await updateUserProfile(profileData.displayName, profileData.photoURL);
+        profileUpdated = true;
+      }
+
+      // Update Email
+      if (profileData.email !== user.email) {
+        await updateUserEmail(profileData.email);
+        emailUpdated = true;
+      }
+
+      if (profileUpdated || emailUpdated) {
+        toast.success('Profile details updated successfully!');
+        setImageError(false);
+      } else {
+        toast('No changes were made.');
+      }
     } catch (error) {
       console.error(error);
-      toast.error('Failed to update profile.');
+      if (error.code === 'auth/requires-recent-login') {
+        toast.error('Please logout and login again to update your email.');
+      } else {
+        toast.error(error.message || 'Failed to update profile details.');
+      }
     } finally {
       setIsUpdatingProfile(false);
     }
@@ -103,24 +128,58 @@ export const Profile = () => {
 
               <h4 className="text-lg font-semibold text-text-primary mb-6">Update Profile details</h4>
               <form onSubmit={handleProfileUpdate} className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-text-primary mb-2">Display Name</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <User className="h-5 w-5 text-text-secondary" />
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-text-primary mb-2">Display Name</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <User className="h-5 w-5 text-text-secondary" />
+                      </div>
+                      <input
+                        type="text"
+                        value={profileData.displayName}
+                        onChange={(e) => setProfileData({ ...profileData, displayName: e.target.value })}
+                        className="block w-full pl-10 pr-3 py-3 border border-border rounded-xl focus:ring-primary focus:border-primary bg-background text-text-primary transition-colors"
+                        placeholder="Your full name"
+                      />
                     </div>
-                    <input
-                      type="text"
-                      value={profileData.displayName}
-                      onChange={(e) => setProfileData({ ...profileData, displayName: e.target.value })}
-                      className="block w-full pl-10 pr-3 py-3 border border-border rounded-xl focus:ring-primary focus:border-primary bg-background text-text-primary transition-colors"
-                      placeholder="Your full name"
-                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-text-primary mb-2">Email Address</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Mail className="h-5 w-5 text-text-secondary" />
+                      </div>
+                      <input
+                        type="email"
+                        value={profileData.email}
+                        onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
+                        className="block w-full pl-10 pr-3 py-3 border border-border rounded-xl focus:ring-primary focus:border-primary bg-background text-text-primary transition-colors"
+                        placeholder="Your email address"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-text-primary mb-2">Profile Photo URL</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Camera className="h-5 w-5 text-text-secondary" />
+                      </div>
+                      <input
+                        type="url"
+                        value={profileData.photoURL}
+                        onChange={(e) => setProfileData({ ...profileData, photoURL: e.target.value })}
+                        className="block w-full pl-10 pr-3 py-3 border border-border rounded-xl focus:ring-primary focus:border-primary bg-background text-text-primary transition-colors"
+                        placeholder="https://example.com/your-photo.jpg"
+                      />
+                    </div>
                   </div>
                 </div>
                 
-                <div className="flex justify-end">
-                  <Button type="submit" disabled={isUpdatingProfile || profileData.displayName === user.displayName}>
+                <div className="flex justify-end mt-6">
+                  <Button type="submit" disabled={isUpdatingProfile || (profileData.displayName === user.displayName && profileData.email === user.email && profileData.photoURL === (user.photoURL || ''))}>
                     {isUpdatingProfile ? 'Saving...' : 'Save Changes'}
                   </Button>
                 </div>

@@ -6,6 +6,7 @@ import {
   signInWithPopup,
   updateProfile, 
   updatePassword,
+  updateEmail,
   sendPasswordResetEmail,
   signOut 
 } from 'firebase/auth';
@@ -20,6 +21,7 @@ export const AuthContext = createContext({
   logout: async () => {},
   updateUserProfile: async () => {},
   updateUserPassword: async () => {},
+  updateUserEmail: async () => {},
   resetPassword: async () => {}
 });
 
@@ -69,12 +71,18 @@ export const AuthProvider = ({ children }) => {
     await updatePassword(auth.currentUser, newPassword);
   };
 
+  const updateUserEmail = async (newEmail) => {
+    if (!auth.currentUser) throw new Error("No user logged in");
+    await updateEmail(auth.currentUser, newEmail);
+    setUser({ ...auth.currentUser });
+  };
+
   const resetPassword = async (email) => {
     await sendPasswordResetEmail(auth, email);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, signup, loginWithGoogle, logout, updateUserProfile, updateUserPassword, resetPassword }}>
+    <AuthContext.Provider value={{ user, loading, login, signup, loginWithGoogle, logout, updateUserProfile, updateUserPassword, updateUserEmail, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );
