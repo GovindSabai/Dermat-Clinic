@@ -30,8 +30,8 @@ export const DoctorDetails = () => {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="mb-6">
-            <Link to="/our-team" className="inline-flex items-center text-primary hover:text-primary-dark font-medium transition-colors">
-              <ArrowLeft className="w-4 h-4 mr-2" /> Back to Team
+            <Link to="/doctors" className="inline-flex items-center text-primary hover:text-primary-dark font-medium transition-colors">
+              <ArrowLeft className="w-4 h-4 mr-2" /> Back to Doctors
             </Link>
           </div>
 
