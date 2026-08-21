@@ -30,14 +30,28 @@ export const Profile = () => {
 
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
+    
+    // Check password match if they are trying to update it
+    if (passwordData.newPassword || passwordData.confirmPassword) {
+      if (passwordData.newPassword !== passwordData.confirmPassword) {
+        toast.error('Passwords do not match.');
+        return;
+      }
+      if (passwordData.newPassword.length < 6) {
+        toast.error('Password must be at least 6 characters.');
+        return;
+      }
+    }
+
     setIsUpdatingProfile(true);
     try {
       let emailUpdated = false;
       let profileUpdated = false;
+      let passwordUpdated = false;
 
-      // Update Profile Details (Name & Photo)
-      if (profileData.displayName !== user.displayName || profileData.photoURL !== user.photoURL) {
-        await updateUserProfile(profileData.displayName, profileData.photoURL);
+      // Update Profile Details (Name)
+      if (profileData.displayName !== user.displayName) {
+        await updateUserProfile(profileData.displayName, user.photoURL);
         profileUpdated = true;
       }
 
@@ -47,8 +61,19 @@ export const Profile = () => {
         emailUpdated = true;
       }
 
-      if (profileUpdated || emailUpdated) {
-        toast.success('Profile details updated successfully!');
+      // Update Password
+      if (passwordData.newPassword) {
+        await updateUserPassword(passwordData.newPassword);
+        passwordUpdated = true;
+        setPasswordData({ newPassword: '', confirmPassword: '' });
+      }
+
+      if (profileUpdated || emailUpdated || passwordUpdated) {
+        let messages = [];
+        if (profileUpdated) messages.push('Name');
+        if (emailUpdated) messages.push('Email');
+        if (passwordUpdated) messages.push('Password');
+        toast.success(`${messages.join(', ')} updated successfully!`);
         setImageError(false);
       } else {
         toast('No changes were made.');
@@ -56,7 +81,7 @@ export const Profile = () => {
     } catch (error) {
       console.error(error);
       if (error.code === 'auth/requires-recent-login') {
-        toast.error('Please logout and login again to update your email.');
+        toast.error('Please logout and login again to update sensitive details like email or password.');
       } else {
         toast.error(error.message || 'Failed to update profile details.');
       }
@@ -65,29 +90,7 @@ export const Profile = () => {
     }
   };
 
-  const handlePasswordUpdate = async (e) => {
-    e.preventDefault();
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      toast.error('Passwords do not match.');
-      return;
-    }
-    
-    setIsUpdatingPassword(true);
-    try {
-      await updateUserPassword(passwordData.newPassword);
-      toast.success('Password updated successfully!');
-      setPasswordData({ newPassword: '', confirmPassword: '' });
-    } catch (error) {
-      console.error(error);
-      if (error.code === 'auth/requires-recent-login') {
-        toast.error('Please logout and login again to update your password.');
-      } else {
-        toast.error('Failed to update password.');
-      }
-    } finally {
-      setIsUpdatingPassword(false);
-    }
-  };
+
 
   return (
     <>
@@ -161,76 +164,51 @@ export const Profile = () => {
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-text-primary mb-2">Profile Photo URL</label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Camera className="h-5 w-5 text-text-secondary" />
+                  {user.providerData[0]?.providerId === 'password' && (
+                    <>
+                      <div className="pt-4 border-t border-border mt-6">
+                        <h5 className="text-sm font-semibold text-text-primary mb-4 flex items-center">
+                          <Lock className="w-4 h-4 mr-2 text-primary" />
+                          Change Password (Optional)
+                        </h5>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-text-primary mb-2">New Password</label>
+                            <input
+                              type="password"
+                              value={passwordData.newPassword}
+                              onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                              className="block w-full px-4 py-3 border border-border rounded-xl focus:ring-primary focus:border-primary bg-background text-text-primary transition-colors"
+                              placeholder="Min 6 characters"
+                              minLength="6"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-text-primary mb-2">Confirm Password</label>
+                            <input
+                              type="password"
+                              value={passwordData.confirmPassword}
+                              onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                              className="block w-full px-4 py-3 border border-border rounded-xl focus:ring-primary focus:border-primary bg-background text-text-primary transition-colors"
+                              placeholder="Re-enter password"
+                              minLength="6"
+                            />
+                          </div>
+                        </div>
                       </div>
-                      <input
-                        type="url"
-                        value={profileData.photoURL}
-                        onChange={(e) => setProfileData({ ...profileData, photoURL: e.target.value })}
-                        className="block w-full pl-10 pr-3 py-3 border border-border rounded-xl focus:ring-primary focus:border-primary bg-background text-text-primary transition-colors"
-                        placeholder="https://example.com/your-photo.jpg"
-                      />
-                    </div>
-                  </div>
+                    </>
+                  )}
                 </div>
                 
                 <div className="flex justify-end mt-6">
-                  <Button type="submit" disabled={isUpdatingProfile || (profileData.displayName === user.displayName && profileData.email === user.email && profileData.photoURL === (user.photoURL || ''))}>
+                  <Button type="submit" disabled={isUpdatingProfile || (profileData.displayName === user.displayName && profileData.email === user.email && !passwordData.newPassword)}>
                     {isUpdatingProfile ? 'Saving...' : 'Save Changes'}
                   </Button>
                 </div>
               </form>
             </div>
 
-            {/* Password Update Card */}
-            {user.providerData[0]?.providerId === 'password' && (
-              <div className="bg-surface rounded-3xl shadow-sm border border-border p-8">
-                <h4 className="text-lg font-semibold text-text-primary mb-6 flex items-center">
-                  <Lock className="w-5 h-5 mr-2 text-primary" />
-                  Change Password
-                </h4>
-                
-                <form onSubmit={handlePasswordUpdate} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-text-primary mb-2">New Password</label>
-                      <input
-                        type="password"
-                        value={passwordData.newPassword}
-                        onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                        className="block w-full px-4 py-3 border border-border rounded-xl focus:ring-primary focus:border-primary bg-background text-text-primary transition-colors"
-                        placeholder="Min 6 characters"
-                        minLength="6"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-text-primary mb-2">Confirm Password</label>
-                      <input
-                        type="password"
-                        value={passwordData.confirmPassword}
-                        onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                        className="block w-full px-4 py-3 border border-border rounded-xl focus:ring-primary focus:border-primary bg-background text-text-primary transition-colors"
-                        placeholder="Re-enter password"
-                        minLength="6"
-                        required
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-end">
-                    <Button type="submit" variant="primary" disabled={isUpdatingPassword || !passwordData.newPassword}>
-                      {isUpdatingPassword ? 'Updating...' : 'Update Password'}
-                    </Button>
-                  </div>
-                </form>
-              </div>
-            )}
-            
+
           </div>
         </div>
       </section>
