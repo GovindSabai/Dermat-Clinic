@@ -24,8 +24,8 @@ export const BeforeAfter = () => {
       id: 3,
       category: 'Anti-Aging & Skin Rejuvenation',
       description: 'Smoother texture and reduced fine lines after laser therapy.',
-      before: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400&h=400',
-      after: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=400&h=400'
+      before: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=400&h=400',
+      after: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400&h=400'
     }
   ];
 
